@@ -1,16 +1,11 @@
-
-import './App.css'
-
+import Register from "./pages/Register";
+import './style.scss'
 function App() {
-
   return (
     <>
-     
-      <p>
-        Click on the Vite and React logos to learn more
-      </p>
+      <Register />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
