@@ -50,6 +50,14 @@
       .fileSelection {
         display: none;
       }
+      label{
+        gap: 12px;
+        display: flex;
+        align-items: center;
+        color:#8da4f1;
+        font-style: 12px;
+        cursor: pointer;
+      }
     }
   }
 }
