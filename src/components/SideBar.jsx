@@ -1,7 +1,8 @@
+import Navbar from "./Navbar"
 
 function SideBar() {
   return (
-    <div>SideBar</div>
+    <div className="sidebar"><Navbar/></div>
   )
 }
 
