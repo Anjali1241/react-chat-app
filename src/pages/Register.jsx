@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth,storage } from "../firebase";
 import { useState } from "react";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 function Register() {
   const [err, setErr] = useState(false);
@@ -17,6 +18,33 @@ function Register() {
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
+   
+
+const storageRef = ref(storage, 'images/rivers.jpg');
+
+const uploadTask = uploadBytesResumable(storageRef, file);
+
+// Register three observers:
+// 1. 'state_changed' observer, called any time the state changes
+// 2. Error observer, called on failure
+// 3. Completion observer, called on successful completion
+uploadTask.on(
+  (error) => {
+    setErr(true)
+    // Handle unsuccessful uploads
+  }, 
+  () => {
+    // Handle successful uploads on complete
+    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+    getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+      console.log('File available at', downloadURL);
+      await updateProfile(res.user,{
+        displayName,
+        photoURL:downloadURL
+      });
+    });
+  }
+);
     } catch (err) {
       setErr(err);
     }
