@@ -1,8 +1,10 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth,storage } from "../firebase";
 import { useState } from "react";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { setDoc } from "firebase/firestore";
 
 function Register() {
   const [err, setErr] = useState(false);
@@ -33,7 +35,7 @@ uploadTask.on(
     setErr(true)
     // Handle unsuccessful uploads
   }, 
-  () => {
+  async () => {
     // Handle successful uploads on complete
     // For instance, get the download URL: https://firebasestorage.googleapis.com/...
     getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
@@ -43,6 +45,13 @@ uploadTask.on(
         photoURL:downloadURL
       });
     });
+
+    await setDoc(doc(db,'users', res.user.uid),{
+      uid:res.user.uid,
+      displayName,
+      email,
+      photoURL
+    })
   }
 );
     } catch (err) {
