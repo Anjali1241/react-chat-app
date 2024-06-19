@@ -1,9 +1,14 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth,storage } from "../firebase";
+import { auth, storage } from "../firebase";
 import { useState } from "react";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 import { setDoc } from "firebase/firestore";
 
 function Register() {
@@ -20,40 +25,41 @@ function Register() {
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
-   
 
-const storageRef = ref(storage, 'images/rivers.jpg');
+      const storageRef = ref(storage, "images/rivers.jpg");
 
-const uploadTask = uploadBytesResumable(storageRef, file);
+      const uploadTask = uploadBytesResumable(storageRef, file);
 
-// Register three observers:
-// 1. 'state_changed' observer, called any time the state changes
-// 2. Error observer, called on failure
-// 3. Completion observer, called on successful completion
-uploadTask.on(
-  (error) => {
-    setErr(true)
-    // Handle unsuccessful uploads
-  }, 
-  async () => {
-    // Handle successful uploads on complete
-    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-    getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-      console.log('File available at', downloadURL);
-      await updateProfile(res.user,{
-        displayName,
-        photoURL:downloadURL
-      });
-    });
+      // Register three observers:
+      // 1. 'state_changed' observer, called any time the state changes
+      // 2. Error observer, called on failure
+      // 3. Completion observer, called on successful completion
+      uploadTask.on(
+        (error) => {
+          setErr(true);
+          // Handle unsuccessful uploads
+        },
+        async () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+            console.log("File available at", downloadURL);
+            await updateProfile(res.user, {
+              displayName,
+              photoURL: downloadURL,
+            });
+          });
 
-    await setDoc(doc(db,'users', res.user.uid),{
-      uid:res.user.uid,
-      displayName,
-      email,
-      photoURL
-    })
-  }
-);
+          await setDoc(doc(db, "users", res.user.uid), {
+            uid: res.user.uid,
+            displayName,
+            email,
+            photoURL,
+          });
+
+          await setDoc(doc(db,'userChats', res.user.uid),{})
+        }
+      );
     } catch (err) {
       setErr(err);
     }
