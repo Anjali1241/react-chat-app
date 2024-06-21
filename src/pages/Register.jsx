@@ -1,18 +1,19 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, storage } from "../firebase";
+import { auth, storage,db } from "../firebase";
 import { useState } from "react";
 import {
-  getStorage,
   ref,
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-import { setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
+import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
   const [err, setErr] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,14 +27,11 @@ function Register() {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
 
-      const storageRef = ref(storage, "images/rivers.jpg");
+      const storageRef = ref(storage, displayName);
 
       const uploadTask = uploadBytesResumable(storageRef, file);
 
-      // Register three observers:
-      // 1. 'state_changed' observer, called any time the state changes
-      // 2. Error observer, called on failure
-      // 3. Completion observer, called on successful completion
+      
       uploadTask.on(
         (error) => {
           setErr(true);
@@ -42,6 +40,7 @@ function Register() {
         async () => {
           // Handle successful uploads on complete
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          console.log("3");
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
             console.log("File available at", downloadURL);
             await updateProfile(res.user, {
@@ -49,6 +48,8 @@ function Register() {
               photoURL: downloadURL,
             });
           });
+          console.log("4");
+          navigate("/")
 
           await setDoc(doc(db, "users", res.user.uid), {
             uid: res.user.uid,
@@ -56,11 +57,15 @@ function Register() {
             email,
             photoURL,
           });
-
-          await setDoc(doc(db,'userChats', res.user.uid),{})
+          console.log("5");
+          await setDoc(doc(db, "userChats", res.user.uid), {});
+          console.log("2");
+          
+          console.log("1");
         }
       );
     } catch (err) {
+      console.log(err);
       setErr(err);
     }
   };
@@ -82,7 +87,7 @@ function Register() {
           <button>Sign Up</button>
           {err && <span>Something went wrong</span>}
         </form>
-        <p>Have an account? Login</p>
+        <p>Have an account? <Link to="/login">Login</Link></p>
       </div>
     </div>
   );
