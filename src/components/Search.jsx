@@ -1,18 +1,52 @@
-
+/* eslint-disable no-unused-vars */
+import { useState } from "react";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../firebase";
 function Search() {
+  const [username, setUsername] = useState("");
+  const [user, setUser] = useState(null);
+  const [err, setErr] = useState('');
+
+  const handleSearch = async () => {
+    const q = query(
+      collection(db, "users"),
+      where("displayname", "==", username)
+    );
+    try {
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        setUser(doc.data());
+      });
+    } catch (err) {
+      setErr(err);
+    }
+  };
+
+  const handleKey = (e) => {
+    e.code === "Enter" && handleSearch();
+  };
+console.log(err);
   return (
     <div className="search">
       <div className="searchForm">
-        <input type="text" placeholder="find a user"/>
+        <input
+          type="text"
+          placeholder="find a user"
+          onKeyDown={handleKey}
+          onChange={(e) => setUsername(e.target.value)}
+        />
       </div>
-      <div className="userChat">
-      <img src="https://th.bing.com/th/id/R.6f2b028f23c3eac3dc19a56612b02c1e?rik=DZUPjJ5h48iODg&riu=http%3a%2f%2fmashhadtravels.com%2fwp-content%2fuploads%2f2017%2f11%2ffemale-dummy-profile.png&ehk=BrK8B6mqiiqfhp8SCyXQEnzcN5QhXVeDM60j6AZ9zKE%3d&risl=&pid=ImgRaw&r=0" alt="" />
-      <div className="userChatInfo">
-        <span>Anjali</span>
-      </div>
-      </div>
+      {/* {err && <span>{err}</span>} */}
+      {user && (
+        <div className="userChat">
+          <img src={user.photoURL} alt="" />
+          <div className="userChatInfo">
+            <span>{user.displayName}</span>
+          </div>
+        </div>
+      )}
     </div>
-  )
+  );
 }
 
-export default Search
+export default Search;

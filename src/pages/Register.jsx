@@ -47,21 +47,23 @@ function Register() {
               displayName,
               photoURL: downloadURL,
             });
+            console.log("5",res.user.uid);
+
+            await setDoc(doc(db, "users", res.user.uid), {
+              uid: res.user.uid,
+              displayName,
+              email,
+              photoURL: downloadURL,
+            });
+            await setDoc(doc(db, "userChats", res.user.uid), {});
+            console.log("2");
+            
+            console.log("1");
+            navigate("/")
           });
           console.log("4");
-          navigate("/")
 
-          await setDoc(doc(db, "users", res.user.uid), {
-            uid: res.user.uid,
-            displayName,
-            email,
-            photoURL,
-          });
-          console.log("5");
-          await setDoc(doc(db, "userChats", res.user.uid), {});
-          console.log("2");
-          
-          console.log("1");
+         
         }
       );
     } catch (err) {
