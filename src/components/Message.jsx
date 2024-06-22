@@ -1,13 +1,40 @@
-function Message() {
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+import { useContext, useEffect, useRef, useState } from "react";
+import { ChatContext } from "../context/UserContext";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../firebase";
+import { AuthContext } from "../context/AuthContext";
+
+function Message({ message }) {
+  console.log("messagemessage", message.img);
+  const { currentUser } = useContext(AuthContext);
+  const { data } = useContext(ChatContext);
+
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  }, [message]);
   return (
-    <div className="message owner">
+    <div
+      ref={ref}
+      className={`message ${message.senderId === currentUser.uid && "owner"}`}
+    >
       <div className="messageInfo">
-        <img src="https://th.bing.com/th/id/R.6f2b028f23c3eac3dc19a56612b02c1e?rik=DZUPjJ5h48iODg&riu=http%3a%2f%2fmashhadtravels.com%2fwp-content%2fuploads%2f2017%2f11%2ffemale-dummy-profile.png&ehk=BrK8B6mqiiqfhp8SCyXQEnzcN5QhXVeDM60j6AZ9zKE%3d&risl=&pid=ImgRaw&r=0" alt="" />
-      <span>just now</span>
+        <img
+          src={
+            message.senderId === currentUser.uid
+              ? currentUser.photoURL
+              : data.user.photoURL
+          }
+          alt=""
+        />
+        <span>just now</span>
       </div>
       <div className="messageContent">
-        <p>hellow</p>
-        <img src="" alt="" />
+        <p>{message.text}</p>
+        {message.img && <img src={message.img} alt="" />}
       </div>
     </div>
   );
