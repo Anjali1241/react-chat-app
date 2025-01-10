@@ -35,7 +35,6 @@ function Input() {
           // Handle unsuccessful uploads
         },
         () => {
-          console.log("3");
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
             await updateDoc(doc(db, "chats", data.chatId), {
               messages: arrayUnion({
@@ -47,7 +46,6 @@ function Input() {
               }),
             });
           });
-          console.log("4");
         }
       );
     } else {

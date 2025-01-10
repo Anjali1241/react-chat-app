@@ -23,7 +23,6 @@ function Search() {
       collection(db, "users"),
       where("displayName", "==", username)
     );
-    console.log(q);
     try {
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
@@ -43,7 +42,6 @@ function Search() {
       currentUser.uid > user.uid
         ? currentUser.uid + user.uid
         : user.uid + currentUser.uid;
-    console.log(combinedId);
 
     try {
       const res = await getDoc(doc(db, "chats", combinedId));

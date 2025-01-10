@@ -7,7 +7,6 @@ import { db } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
 
 function Message({ message }) {
-  console.log("messagemessage", message.img);
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
 

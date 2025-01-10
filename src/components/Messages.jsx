@@ -17,7 +17,6 @@ function Messages() {
       unSub();
     };
   }, [data.chatId]);
-  console.log("messages", messages);
   return (
     <div className="messages">
       {messages?.map((m) => (
