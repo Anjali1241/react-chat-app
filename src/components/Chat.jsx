@@ -11,10 +11,7 @@ function Chat() {
       <div className="chatInfo">
         <span>{data.user?.displayName}</span>
         <div className="chatIcons">
-          {/* <img src="" alt="s" />
-          <img src="" alt="d" />
-          <img src="" alt="a" /> */}
-        </div>
+               </div>
       </div>
         <Messages />
         <Input/>

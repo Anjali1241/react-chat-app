@@ -43,7 +43,7 @@ function Search() {
       currentUser.uid > user.uid
         ? currentUser.uid + user.uid
         : user.uid + currentUser.uid;
-        console.log(combinedId);
+    console.log(combinedId);
 
     try {
       const res = await getDoc(doc(db, "chats", combinedId));
@@ -60,7 +60,7 @@ function Search() {
             photoURL: user.photoURL,
           },
           // serverTimestamp firebase method to fetch current time
-          [combinedId + ".date"]:serverTimestamp()
+          [combinedId + ".date"]: serverTimestamp(),
         });
 
         // another user
@@ -71,15 +71,14 @@ function Search() {
             photoURL: currentUser.photoURL,
           },
           // serverTimestamp firebase method to fetch current time
-          [combinedId + ".date"]:serverTimestamp()
+          [combinedId + ".date"]: serverTimestamp(),
         });
       }
     } catch (err) {
-      //
+      console.log(err)
     }
-setUser(null)
-setUsername('')
-    // create user chats
+    setUser(null);
+    setUsername("");
   };
   return (
     <div className="search">
